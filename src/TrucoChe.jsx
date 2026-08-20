@@ -29,36 +29,85 @@ function borrarSesion() {
 }
 
 const PALOS = {
-  espada: { simbolo: "⚔", color: "#8B2E2E" },
-  basto: { simbolo: "🪵", color: "#4A3222" },
-  oro: { simbolo: "●", color: "#C9A227" },
-  copa: { simbolo: "🏆", color: "#2E5A8B" },
+  espada: { color: "#3A5A8C", nombre: "Espada" },
+  basto: { color: "#5C4130", nombre: "Basto" },
+  oro: { color: "#B8860B", nombre: "Oro" },
+  copa: { color: "#8B2E2E", nombre: "Copa" },
 };
+
+// Ilustraciones SVG propias para cada palo de la baraja española (no emojis).
+function IconoPalo({ palo, size = 22 }) {
+  const c = PALOS[palo].color;
+  if (palo === "espada") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <path d="M12 2 L13.4 12 L12 22 L10.6 12 Z" fill={c} />
+        <rect x="6" y="10.5" width="12" height="2.2" rx="0.6" fill={c} />
+        <rect x="11" y="13" width="2" height="6" rx="0.5" fill={c} />
+        <circle cx="12" cy="19.5" r="1.6" fill={c} />
+      </svg>
+    );
+  }
+  if (palo === "basto") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <path d="M9 21 C7 15 8 9 12 3 C16 9 17 15 15 21 Z" fill={c} />
+        <path d="M12 3 C12.8 6 12.8 9 12 12" stroke="#EDE4D2" strokeWidth="0.7" opacity="0.5" />
+      </svg>
+    );
+  }
+  if (palo === "oro") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" fill={c} />
+        <circle cx="12" cy="12" r="9" fill="none" stroke="#8A6508" strokeWidth="1" />
+        <circle cx="12" cy="12" r="4.5" fill="none" stroke="#F5EEDD" strokeWidth="0.8" opacity="0.6" />
+      </svg>
+    );
+  }
+  // copa
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M6 4 H18 C18 10 15.5 13 12 13 C8.5 13 6 10 6 4 Z" fill={c} />
+      <rect x="11" y="13" width="2" height="5" fill={c} />
+      <rect x="7.5" y="18" width="9" height="2" rx="0.8" fill={c} />
+    </svg>
+  );
+}
 
 function CartaMini({ numero, palo }) {
   const p = PALOS[palo];
+  const esFigura = numero >= 10;
   return (
     <div
       style={{
-        width: 52,
-        height: 74,
-        borderRadius: 6,
-        background: "linear-gradient(155deg, #F5EEDD 0%, #EDE4D2 100%)",
-        border: "1px solid #C9BFA6",
-        boxShadow: "0 3px 6px rgba(0,0,0,0.35)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        color: p.color,
-        fontFamily: "'IBM Plex Mono', monospace",
-        fontWeight: 700,
+        width: 56,
+        height: 80,
+        borderRadius: 7,
+        background: "linear-gradient(160deg, #FBF7EC 0%, #F0E8D4 55%, #EAE0C8 100%)",
+        border: `1px solid ${p.color}33`,
+        boxShadow: "0 4px 8px rgba(0,0,0,0.4), inset 0 0 0 3px rgba(255,255,255,0.5)",
+        position: "relative",
         userSelect: "none",
         flexShrink: 0,
+        overflow: "hidden",
       }}
     >
-      <span style={{ fontSize: 15, lineHeight: 1 }}>{numero}</span>
-      <span style={{ fontSize: 18, lineHeight: 1, marginTop: 3 }}>{p.simbolo}</span>
+      {/* Número esquina superior */}
+      <div style={{ position: "absolute", top: 4, left: 5, color: p.color, fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700, fontSize: 13, lineHeight: 1 }}>
+        {numero}
+      </div>
+      {/* Marca de agua central */}
+      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", opacity: esFigura ? 0.9 : 0.16 }}>
+        <IconoPalo palo={palo} size={esFigura ? 30 : 40} />
+      </div>
+      {/* Número esquina inferior (invertido, como cartas reales) */}
+      <div style={{ position: "absolute", bottom: 4, right: 5, color: p.color, fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700, fontSize: 13, lineHeight: 1, transform: "rotate(180deg)" }}>
+        {numero}
+      </div>
+      <div style={{ position: "absolute", top: 20, left: 5 }}>
+        <IconoPalo palo={palo} size={11} />
+      </div>
     </div>
   );
 }
@@ -67,20 +116,104 @@ function CartaDorso() {
   return (
     <div
       style={{
-        width: 52,
-        height: 74,
-        borderRadius: 6,
-        background:
-          "repeating-linear-gradient(45deg, #1B3A2C, #1B3A2C 6px, #234A38 6px, #234A38 12px)",
+        width: 56,
+        height: 80,
+        borderRadius: 7,
+        background: "linear-gradient(135deg, #1B3A2C 0%, #234A38 50%, #1B3A2C 100%)",
         border: "1px solid #0F241C",
-        boxShadow: "0 3px 6px rgba(0,0,0,0.35)",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.4)",
         flexShrink: 0,
+        position: "relative",
+        overflow: "hidden",
       }}
-    />
+    >
+      <div style={{
+        position: "absolute", inset: 4, borderRadius: 4,
+        border: "1.5px solid #C9A227", opacity: 0.5,
+      }} />
+      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ color: "#C9A227", fontFamily: "'Fraunces', serif", fontWeight: 900, fontSize: 20, opacity: 0.85 }}>C</span>
+      </div>
+    </div>
   );
 }
 
-/* ---------------- PANTALLA: LOGIN / REGISTRO ---------------- */
+/* ---------------- AVATARES ---------------- */
+// 16 emblemas propios, cada uno combina un palo de la baraja con un fondo y patrón
+// distinto — nada de iniciales genéricas ni gradientes de stock.
+
+const AVATAR_SET = [
+  { bg: "#1B3A2C", palo: "espada", anillo: "#C9A227" },
+  { bg: "#8B2E2E", palo: "copa", anillo: "#EDE4D2" },
+  { bg: "#4A3222", palo: "basto", anillo: "#C9A227" },
+  { bg: "#2E5A8B", palo: "espada", anillo: "#EDE4D2" },
+  { bg: "#C9A227", palo: "oro", anillo: "#1B3A2C" },
+  { bg: "#5C1F1F", palo: "basto", anillo: "#C9A227" },
+  { bg: "#234A38", palo: "copa", anillo: "#C9A227" },
+  { bg: "#3A2A1A", palo: "espada", anillo: "#8B2E2E" },
+  { bg: "#8B5E3C", palo: "oro", anillo: "#1B3A2C" },
+  { bg: "#1F2E4A", palo: "copa", anillo: "#C9A227" },
+  { bg: "#6B1E1E", palo: "espada", anillo: "#EDE4D2" },
+  { bg: "#2E4A2E", palo: "oro", anillo: "#EDE4D2" },
+  { bg: "#4A1F3A", palo: "basto", anillo: "#C9A227" },
+  { bg: "#7A4A1E", palo: "copa", anillo: "#1B3A2C" },
+  { bg: "#1E3A4A", palo: "basto", anillo: "#C9A227" },
+  { bg: "#3A1E2E", palo: "oro", anillo: "#EDE4D2" },
+];
+
+function AvatarIcon({ avatarId = 0, size = 44 }) {
+  const a = AVATAR_SET[avatarId % AVATAR_SET.length];
+  return (
+    <div
+      style={{
+        width: size, height: size, borderRadius: "50%",
+        background: a.bg,
+        border: `2px solid ${a.anillo}`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        flexShrink: 0, boxShadow: "0 2px 6px rgba(0,0,0,0.35)",
+      }}
+    >
+      <IconoPaloClaro palo={a.palo} size={Math.round(size * 0.5)} color={a.anillo} />
+    </div>
+  );
+}
+
+// Versión del ícono de palo en un solo color (para que contraste bien sobre el fondo del avatar)
+function IconoPaloClaro({ palo, size, color }) {
+  if (palo === "espada") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <path d="M12 2 L13.4 12 L12 22 L10.6 12 Z" fill={color} />
+        <rect x="6" y="10.5" width="12" height="2.2" rx="0.6" fill={color} />
+        <rect x="11" y="13" width="2" height="6" rx="0.5" fill={color} />
+        <circle cx="12" cy="19.5" r="1.6" fill={color} />
+      </svg>
+    );
+  }
+  if (palo === "basto") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <path d="M9 21 C7 15 8 9 12 3 C16 9 17 15 15 21 Z" fill={color} />
+      </svg>
+    );
+  }
+  if (palo === "oro") {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" fill={color} />
+      </svg>
+    );
+  }
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M6 4 H18 C18 10 15.5 13 12 13 C8.5 13 6 10 6 4 Z" fill={color} />
+      <rect x="11" y="13" width="2" height="5" fill={color} />
+      <rect x="7.5" y="18" width="9" height="2" rx="0.8" fill={color} />
+    </svg>
+  );
+}
+
+
 
 function PantallaAuth({ onIngresar }) {
   const [modo, setModo] = useState("login"); // login | registro
@@ -346,7 +479,7 @@ const inputStyle = {
 
 /* ---------------- PANTALLA: LOBBY (buscar mesa) ---------------- */
 
-function PantallaLobby({ usuario, token, onEntrarMesa, onSalir, onVerRanking }) {
+function PantallaLobby({ usuario, token, onEntrarMesa, onSalir, onVerRanking, onVerPerfil }) {
   const [fichas, setFichas] = useState(null);
   const [apuestaSel, setApuestaSel] = useState(50);
   const [juegoSel, setJuegoSel] = useState("truco"); // 'truco' | 'chinchon'
@@ -384,7 +517,10 @@ function PantallaLobby({ usuario, token, onEntrarMesa, onSalir, onVerRanking }) 
               {fichas === null ? "…" : fichas.toLocaleString()}
             </span>
           </div>
-          <span style={{ color: "#B7AA88", fontSize: 14 }}>{usuario.nombre}</span>
+          <button onClick={onVerPerfil} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+            <AvatarIcon avatarId={usuario.avatarId} size={32} />
+            <span style={{ color: "#B7AA88", fontSize: 14 }}>{usuario.nombre}</span>
+          </button>
           <button onClick={onVerRanking} style={{ background: "none", border: "1px solid #3A5A47", color: "#EDE4D2", cursor: "pointer", fontSize: 13, padding: "6px 14px", borderRadius: 8 }}>
             🏆 Ranking
           </button>
@@ -680,7 +816,7 @@ function PantallaMesa({ usuario, socket, apuesta, estadoInicial, onSalirMesa }) 
             width: "min(560px, 90vw)",
             height: "min(560px, 90vw)",
             borderRadius: "50%",
-            background: "radial-gradient(circle at 50% 40%, #234A38 0%, #1B3A2C 60%, #123020 100%)",
+            background: "radial-gradient(circle at 50% 40%, #234A38 0%, #1B3A2C 60%, #123020 100%), repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 3px)",
             border: "10px solid #4A3222",
             boxShadow: "inset 0 0 60px rgba(0,0,0,0.5), 0 20px 50px rgba(0,0,0,0.5)",
             position: "relative",
@@ -693,19 +829,17 @@ function PantallaMesa({ usuario, socket, apuesta, estadoInicial, onSalirMesa }) 
         >
           {/* marca de agua palos en el paño */}
           {["espada", "basto", "oro", "copa"].map((p, i) => (
-            <span
+            <div
               key={p}
               style={{
                 position: "absolute",
-                fontSize: 30,
-                opacity: 0.08,
-                color: "#EDE4D2",
+                opacity: 0.1,
                 top: `${18 + (i % 2) * 64}%`,
                 left: `${i < 2 ? 12 : 78}%`,
               }}
             >
-              {PALOS[p].simbolo}
-            </span>
+              <IconoPalo palo={p} size={34} />
+            </div>
           ))}
 
           {/* Mano del rival (dorsos) */}
@@ -889,6 +1023,7 @@ function PantallaRanking({ usuario, token, onVolver }) {
             }}>
               {i + 1}
             </span>
+            <AvatarIcon avatarId={f.avatarId ?? 0} size={32} />
             <span style={{ flex: 1, color: "#EDE4D2", fontWeight: f.usuarioId === usuario.id ? 700 : 400 }}>
               {f.nombre}{f.usuarioId === usuario.id ? " (vos)" : ""}
             </span>
@@ -1077,6 +1212,119 @@ function PantallaMesaChinchon({ usuario, socket, apuesta, estadoInicial, onSalir
 }
 
 
+/* ---------------- PANTALLA: PERFIL (editar nombre y avatar) ---------------- */
+
+function PantallaPerfil({ usuario, token, onVolver, onActualizado }) {
+  const [nombre, setNombre] = useState(usuario.nombre);
+  const [avatarId, setAvatarId] = useState(usuario.avatarId ?? 0);
+  const [guardando, setGuardando] = useState(false);
+  const [error, setError] = useState("");
+  const [guardado, setGuardado] = useState(false);
+
+  async function guardar() {
+    setError("");
+    if (nombre.trim().length < 2) {
+      setError("El nombre tiene que tener al menos 2 caracteres.");
+      return;
+    }
+    setGuardando(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/perfil`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ nombre: nombre.trim(), avatarId }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "No se pudo guardar.");
+        setGuardando(false);
+        return;
+      }
+      onActualizado(data.usuario);
+      setGuardado(true);
+      setTimeout(() => setGuardado(false), 1800);
+    } catch {
+      setError("No se pudo conectar con el servidor.");
+    }
+    setGuardando(false);
+  }
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#16301F", fontFamily: "'Work Sans', sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=IBM+Plex+Mono:wght@600&display=swap');`}</style>
+
+      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 32px", borderBottom: "1px solid #23422F" }}>
+        <button onClick={onVolver} style={{ background: "none", border: "none", color: "#5C6E62", cursor: "pointer", fontSize: 13 }}>
+          ← Volver al lobby
+        </button>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontWeight: 900, fontSize: 22, color: "#EDE4D2", margin: 0 }}>
+          Tu perfil
+        </h1>
+        <div style={{ width: 100 }} />
+      </header>
+
+      <main style={{ maxWidth: 520, margin: "0 auto", padding: "40px 24px", textAlign: "center" }}>
+        <AvatarIcon avatarId={avatarId} size={88} />
+
+        <div style={{ marginTop: 24, marginBottom: 32 }}>
+          <label style={{ display: "block", color: "#B7AA88", fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8, fontFamily: "'IBM Plex Mono', monospace" }}>
+            Nombre para mostrar
+          </label>
+          <input
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            maxLength={30}
+            style={{
+              width: "100%", padding: "12px 16px", borderRadius: 10,
+              border: "1.5px solid #3A5A47", background: "#1B3A2C", color: "#EDE4D2",
+              fontFamily: "'Work Sans', sans-serif", fontSize: 16, textAlign: "center",
+              outline: "none", boxSizing: "border-box",
+            }}
+          />
+        </div>
+
+        <p style={{ color: "#B7AA88", fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14, fontFamily: "'IBM Plex Mono', monospace" }}>
+          Elegí tu avatar
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 32 }}>
+          {AVATAR_SET.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setAvatarId(i)}
+              style={{
+                background: "none", border: "none", cursor: "pointer", padding: 6,
+                borderRadius: "50%",
+                outline: avatarId === i ? "2.5px solid #C9A227" : "2.5px solid transparent",
+                outlineOffset: 2,
+                transition: "outline 0.15s",
+              }}
+            >
+              <AvatarIcon avatarId={i} size={52} />
+            </button>
+          ))}
+        </div>
+
+        {error && <p style={{ color: "#D97757", fontSize: 13, marginBottom: 16 }}>{error}</p>}
+        {guardado && <p style={{ color: "#C9A227", fontSize: 13, marginBottom: 16 }}>Guardado ✓</p>}
+
+        <button
+          onClick={guardar}
+          disabled={guardando}
+          style={{
+            padding: "13px 40px", borderRadius: 10, border: "none",
+            background: "#C9A227", color: "#1B3A2C", fontWeight: 700, fontSize: 15,
+            cursor: guardando ? "default" : "pointer", opacity: guardando ? 0.7 : 1,
+            boxShadow: "0 6px 14px rgba(201,162,39,0.35)",
+          }}
+        >
+          {guardando ? "Guardando…" : "Guardar cambios"}
+        </button>
+      </main>
+    </div>
+  );
+}
+
+
 export default function TrucoCheApp() {
   const sesionGuardada = leerSesion();
   const [pantalla, setPantalla] = useState(sesionGuardada ? "lobby" : "auth");
@@ -1147,12 +1395,25 @@ export default function TrucoCheApp() {
             {errorGlobal}
           </div>
         )}
-        <PantallaLobby usuario={usuario} token={token} onEntrarMesa={entrarABuscar} onSalir={salir} onVerRanking={() => setPantalla("ranking")} />
+        <PantallaLobby usuario={usuario} token={token} onEntrarMesa={entrarABuscar} onSalir={salir} onVerRanking={() => setPantalla("ranking")} onVerPerfil={() => setPantalla("perfil")} />
       </>
     );
   }
   if (pantalla === "ranking") {
     return <PantallaRanking usuario={usuario} token={token} onVolver={() => setPantalla("lobby")} />;
+  }
+  if (pantalla === "perfil") {
+    return (
+      <PantallaPerfil
+        usuario={usuario}
+        token={token}
+        onVolver={() => setPantalla("lobby")}
+        onActualizado={(usuarioActualizado) => {
+          setUsuario(usuarioActualizado);
+          guardarSesion(token, usuarioActualizado); // persiste el cambio para la próxima vez que entre
+        }}
+      />
+    );
   }
   if (pantalla === "buscando") {
     return (
